@@ -121,6 +121,68 @@ in {
       logging.client.endpoint = "http://${listenerAddress}:${listenerPort}/loki/api/v1/push";
       logging.listener.address = "admin-vm-debug";
       logging.listener.port = 9999;
+
+      # USB hot plugging configuration
+      hardware.usb.vhotplug = {
+        enable = true;
+        rules = [
+          {
+            name = "GUIVM";
+            qmpSocket = "/var/lib/microvms/gui-vm/gui-vm.sock";
+            usbPassthrough = [
+              {
+                class = 3;
+                protocol = 1;
+                description = "HID Keyboard";
+              }
+              {
+                class = 3;
+                protocol = 2;
+                description = "HID Mouse";
+              }
+              {
+                class = 11;
+                description = "Chip/SmartCard (e.g. YubiKey)";
+              }
+              {
+                class = 8;
+                sublass = 6;
+                description = "Mass Storage - SCSI (USB drives)";
+                # Currently disabled to leave USB drives connected to the host
+                disable = true;
+              }
+            ];
+            evdevPassthrough = {
+              enable = true;
+              pcieBusPrefix = "rp";
+            };
+          }
+          {
+            name = "NetVM";
+            qmpSocket = "/var/lib/microvms/net-vm/net-vm.sock";
+            usbPassthrough = [
+              {
+                class = 2;
+                sublass = 6;
+                description = "Communications - Ethernet Networking";
+                # Currently disabled to avoid breaking remote nixos-rebuild,
+                # which requires an Ethernet adapter connected to the host
+                disable = true;
+              }
+            ];
+          }
+          {
+            name = "AudioVM";
+            qmpSocket = "/var/lib/microvms/audio-vm/audio-vm.sock";
+            usbPassthrough = [
+              {
+                class = 1;
+                descripton = "Audio";
+              }
+            ];
+          }
+        ];
+      };
     };
   };
 }
