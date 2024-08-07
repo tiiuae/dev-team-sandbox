@@ -30,7 +30,8 @@
       border: 1px solid rgba(223, 92, 55, 1);
     }
   '';
-  lockCmd = "${pkgs.gtklock}/bin/gtklock -s ${gtklockStyle}";
+  # Adding -S which will "Start with input form hidden" (Hidden password prompt)
+  lockCmd = "${pkgs.gtklock}/bin/gtklock -s ${gtklockStyle} -S";
   autostart = pkgs.writeShellApplication {
     name = "labwc-autostart";
 
@@ -51,6 +52,9 @@
 
     text =
       ''
+        # Lock the screen after system boot
+        ${lockCmd} &
+
         # Import WAYLAND_DISPLAY variable to make it available to waypipe and other systemd services
         systemctl --user import-environment WAYLAND_DISPLAY 2>&1 &
 

@@ -11,5 +11,9 @@
     "ghaf:zQlVob4+w3DcvtN6BPjBPaEssJ3PYNSQVlWLk/Uq/Qlbqk9D0IjPjZDm5XwTuKhropVR1hVA4XdZKsSs9BlUEQ==,G3qgBAhmCwANuCdCZzo68QLFFQ4aud/a3X5r1m8UeUpMh5BlDHrHAR0sE0H/d4v7RiScex2TZaHrgYV507BFRA==,es256,+presence"
     #4
     "ghaf:QaA1B4u1GzLt+HSwXpMxmdCOKiBN4WZSUAuEXZahNSpcv8xiYagp0ntVsl8TOx4K+sKls3gTn37Uso/dmncwdA==,mr0Nhwkok7VLUtkBMryOA0lZghU23SCYtU3CZeW5P4WVtnPax3N/6GkfuAv6Zw5ejC4BDvov3oKHTQT/F8eYqA==,es256,+presence"
+    # Vunny Key 1
+    "ghaf:SZ2CwN7EAE4Ujfxhm+CediUaT7ngoaMOqsKRDrOC+wUkTriKlc1cVtsxkOSav2r9ztaNKn/OwoHiN3BmsBYcZA==,oIdGgoGmkVrVis1kdzpvX3kXrOmBe2noFrpHqh4VKlq/WxrFk+Du670BL7DzLas+GxIPNjgdDCHo9daVztfIwQ==,es256,+presence"
+    # Vunny Key 2
+    ":9CEdjOg0YGpvNeisK5OW1hjjg0nRvJDBpr7X3Q4QPtxJP4iC5C6dShTxEpxmLAkqAi8x/jKCDwpt146AYAXfFg==,q8dcSEI2tIyRwB2MhRlrGZRv6ZDkEC2RYn/n33fdmK1KjBkcMy6ELUMQQDVGtsvsiQFbRS3v4qxjsJXF5BVD0A==,es256,+presence+pin"
   ];
 }
