@@ -196,6 +196,11 @@ in {
         path = "${lockCmd}";
         icon = "${pkgs.icon-pack}/system-lock-screen.svg";
       }
+      {
+        name = "FPrint Enroll";
+        path = "${pkgs.foot}/bin/foot -H -T Finger_Print_Enrollment -L ${pkgs.fprint-enroll}/bin/finger-print-enroll";
+        icon = "${pkgs.icon-pack}/authy.svg";
+      }
     ];
   };
 }

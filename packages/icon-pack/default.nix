@@ -9,6 +9,7 @@
   papirus-icon-theme,
 }: let
   icons = [
+    "authy.svg"
     "chromium.svg"
     "distributor-logo-android.svg"
     "distributor-logo-windows.svg"
