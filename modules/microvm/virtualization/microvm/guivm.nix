@@ -118,15 +118,10 @@
           writableStoreOverlay = lib.mkIf config.ghaf.development.debug.tools.enable "/nix/.rw-store";
 
           qemu = {
-            extraArgs =
-              [
-                "-device"
-                "vhost-vsock-pci,guest-cid=${toString cfg.vsockCID}"
-              ]
-              ++ builtins.concatMap (n: [
-                "-device"
-                "pcie-root-port,bus=pcie.0,id=rp${toString n},chassis=${toString n}"
-              ]) (lib.range 1 cfg.pciePorts);
+            extraArgs = [
+              "-device"
+              "vhost-vsock-pci,guest-cid=${toString cfg.vsockCID}"
+            ];
 
             machine =
               {
@@ -198,14 +193,6 @@ in {
       default = 1100;
       description = ''
         Waypipe port number to listen for incoming connections from AppVMs
-      '';
-    };
-
-    pciePorts = lib.mkOption {
-      type = lib.types.int;
-      default = 5;
-      description = ''
-        The number of PCIe ports used for hot-plugging virtio-input-host-pci devices
       '';
     };
   };
