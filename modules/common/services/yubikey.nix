@@ -41,6 +41,15 @@ in {
       cue = true;
     };
 
+      security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
+          subject.isInGroup("wheel")) {
+          return polkit.Result.YES;
+        }
+      });
+  '';
+
     # Below rules are needed for screen locker (gtklock) to work
     services.udev.extraRules = ''
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0407", TAG+="uaccess", GROUP="kvm", MODE="0666"

@@ -28,6 +28,7 @@
     "teams-for-linux.svg"
     "utilities-terminal.svg"
     "yast-vpn.svg"
+    "yubikey-personalization-gui.svg"
   ];
 in
   runCommand "icon-pack" {

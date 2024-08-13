@@ -201,6 +201,11 @@ in {
         path = "${pkgs.foot}/bin/foot -H -T Finger_Print_Enrollment -L ${pkgs.fprint-enroll}/bin/finger-print-enroll";
         icon = "${pkgs.icon-pack}/authy.svg";
       }
+      {
+        name = "Yubikey";
+        path = "${pkgs.foot}/bin/foot -H -T Yubikey -L ${pkgs.yubikey-manager}/bin/ykman info";
+        icon = "${pkgs.icon-pack}/yubikey-personalization-gui.svg";
+      }
     ];
   };
 }

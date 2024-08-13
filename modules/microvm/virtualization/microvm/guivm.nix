@@ -82,6 +82,7 @@
               pkgs.nm-launcher
               pkgs.pamixer
               pkgs.fprint-enroll
+              pkgs.yubikey-manager
             ]
             ++ (lib.optional (config.ghaf.profiles.debug.enable && config.ghaf.virtualization.microvm.idsvm.mitmproxy.enable) pkgs.mitmweb-ui);
         };
