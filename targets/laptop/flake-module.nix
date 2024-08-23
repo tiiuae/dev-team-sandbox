@@ -7,10 +7,11 @@
   self,
   inputs,
   ...
-}: let
+}:
+let
   system = "x86_64-linux";
 
-  laptop-configuration = import ./laptop-configuration-builder.nix {inherit lib self inputs;};
+  laptop-configuration = import ./laptop-configuration-builder.nix { inherit lib self inputs; };
 
   targets = [
     # Laptop Debug configurations
@@ -19,7 +20,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/lenovo-x1/definitions/x1-gen10.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -28,7 +29,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/lenovo-x1/definitions/x1-gen11.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -37,7 +38,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/definitions/dell-latitude/dell-latitude-7230.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -46,7 +47,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/definitions/dell-latitude/dell-latitude-7330.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -57,7 +58,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/lenovo-x1/definitions/x1-gen10.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -66,7 +67,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/lenovo-x1/definitions/x1-gen11.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -75,7 +76,7 @@
       {
         ghaf = {
           hardware.definition.configFile = "/definitions/dell-latitude/dell-latitude-7230.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
@@ -84,16 +85,17 @@
       {
         ghaf = {
           hardware.definition.configFile = "/definitions/dell-latitude/dell-latitude-7330.nix";
-          profiles.mvp-user-trial.enable = true;
+          reference.profiles.mvp-user-trial.enable = true;
         };
       }
     ])
   ];
-in {
+in
+{
   flake = {
-    nixosConfigurations =
-      builtins.listToAttrs (map (t: lib.nameValuePair t.name t.hostConfiguration) targets);
-    packages.${system} =
-      builtins.listToAttrs (map (t: lib.nameValuePair t.name t.package) targets);
+    nixosConfigurations = builtins.listToAttrs (
+      map (t: lib.nameValuePair t.name t.hostConfiguration) targets
+    );
+    packages.${system} = builtins.listToAttrs (map (t: lib.nameValuePair t.name t.package) targets);
   };
 }

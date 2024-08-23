@@ -5,23 +5,26 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (builtins) hasAttr;
-  inherit (lib) mkOption types optionals optionalAttrs concatStrings;
+  inherit (lib)
+    mkOption
+    types
+    optionals
+    optionalAttrs
+    ;
 
   cfg = config.ghaf.virtualization.microvm;
 
   # Currently only x86 with hw definition supported
   inherit (pkgs.stdenv.hostPlatform) isx86;
   fullVirtualization =
-    isx86
-    && (hasAttr "hardware" config.ghaf)
-    && (hasAttr "devices" config.ghaf.hardware);
+    isx86 && (hasAttr "hardware" config.ghaf) && (hasAttr "devices" config.ghaf.hardware);
 
   # Hardware devices passthrough modules
   deviceModules = optionalAttrs fullVirtualization {
-    inherit
-      (config.ghaf.hardware.devices)
+    inherit (config.ghaf.hardware.devices)
       netvmPCIPassthroughModule
       audiovmPCIPassthroughModule
       guivmPCIPassthroughModule
@@ -30,13 +33,7 @@
   };
 
   # Kernel configurations
-  kernelConfigs = optionalAttrs fullVirtualization {
-    inherit
-      (config.ghaf.kernel)
-      guivm
-      audiovm
-      ;
-  };
+  kernelConfigs = optionalAttrs fullVirtualization { inherit (config.ghaf.kernel) guivm audiovm; };
 
   # Firmware module
   firmwareModule = {
@@ -51,19 +48,13 @@
   # Service modules
   serviceModules = {
     # Audio module
-    audio = optionalAttrs cfg.audiovm.audio {
-      config.ghaf.services.audio.enable = true;
-    };
+    audio = optionalAttrs cfg.audiovm.audio { config.ghaf.services.audio.enable = true; };
 
     # Wifi module
-    wifi = optionalAttrs cfg.netvm.wifi {
-      config.ghaf.services.wifi.enable = true;
-    };
+    wifi = optionalAttrs cfg.netvm.wifi { config.ghaf.services.wifi.enable = true; };
 
     # Fprint module
-    fprint = optionalAttrs cfg.guivm.fprint {
-      config.ghaf.services.fprint.enable = true;
-    };
+    fprint = optionalAttrs cfg.guivm.fprint { config.ghaf.services.fprint.enable = true; };
 
     # Desktop module
     desktop = {
@@ -76,13 +67,7 @@
     };
 
     # Yubikey module
-    yubikey = optionalAttrs cfg.guivm.yubikey {
-      config.ghaf.services.yubikey.enable = true;
-      config.ghaf.services.yubikey.u2fKeys = concatStrings [
-        # Add your Yubikey U2F Keys / public Keys here
-        ""
-      ];
-    };
+    yubikey = optionalAttrs cfg.guivm.yubikey { config.ghaf.services.yubikey.enable = true; };
 
     # Common namespace to share (built-time) between host and VMs
     commonNamespace = {
@@ -107,7 +92,8 @@
       };
     };
   };
-in {
+in
+{
   options.ghaf.virtualization.microvm = {
     netvm.wifi = mkOption {
       type = types.bool;

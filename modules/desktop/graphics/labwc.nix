@@ -5,10 +5,11 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   cfg = config.ghaf.graphics.labwc;
-  renderers = ["vulkan" "pixman" "egl2"];
-in {
+in
+{
   options.ghaf.graphics.labwc = {
     enable = lib.mkEnableOption "labwc";
     autolock = {
@@ -23,34 +24,36 @@ in {
         description = "Timeout for screen autolock in seconds.";
       };
     };
-    renderer = lib.mkOption {
-      type = lib.types.enum renderers;
-      default = "pixman";
+    autologinUser = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = config.ghaf.users.accounts.user;
       description = ''
-        Which wlroots renderer to use.
-        Choose one of: ${lib.concatStringsSep "," renderers}
+        Username of the account that will be automatically logged in to the desktop.
+        If unspecified, the login manager is shown as usual.
       '';
     };
     wallpaper = lib.mkOption {
       type = lib.types.path;
-      default = ../../../assets/wallpaper.png;
+      default = "${pkgs.ghaf-artwork}/ghaf-wallpaper.png";
       description = "Path to the wallpaper image";
     };
     frameColouring = lib.mkOption {
-      type = lib.types.listOf (lib.types.submodule {
-        options = {
-          identifier = lib.mkOption {
-            type = lib.types.str;
-            example = "foot";
-            description = "Identifier of the application";
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            identifier = lib.mkOption {
+              type = lib.types.str;
+              example = "foot";
+              description = "Identifier of the application";
+            };
+            colour = lib.mkOption {
+              type = lib.types.str;
+              example = "#006305";
+              description = "Colour of the window frame";
+            };
           };
-          colour = lib.mkOption {
-            type = lib.types.str;
-            example = "#006305";
-            description = "Colour of the window frame";
-          };
-        };
-      });
+        }
+      );
       default = [
         {
           identifier = "foot";
@@ -75,6 +78,10 @@ in {
           identifier = "Element";
           colour = "#337aff";
         }
+        {
+          identifier = "AppFlowy";
+          colour = "#4c3f7a";
+        }
       ];
       description = "List of applications and their frame colours";
     };
@@ -86,24 +93,34 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    ghaf.graphics.window-manager-common.enable = true;
+    ghaf.graphics.login-manager.enable = true;
 
     environment.systemPackages =
       [
         pkgs.labwc
-        pkgs.ghaf-openbox-theme
-        pkgs.gnome.adwaita-icon-theme
+        pkgs.ghaf-theme
+        pkgs.adwaita-icon-theme
 
-        (import ./launchers.nix {inherit pkgs config;})
+        (import ./launchers.nix { inherit pkgs config; })
       ]
       # Grim screenshot tool is used for labwc debug-builds
-      ++ lib.optionals config.ghaf.profiles.debug.enable [pkgs.grim];
+      ++ lib.optionals config.ghaf.profiles.debug.enable [ pkgs.grim ];
 
     # It will create a /etc/pam.d/ file for authentication
-    security.pam.services.gtklock = {};
+    security.pam.services.gtklock = { };
+
+    systemd.user.targets.ghaf-session = {
+      enable = true;
+      description = "Ghaf labwc session";
+      unitConfig = {
+        BindsTo = [ "graphical-session.target" ];
+        After = [ "graphical-session-pre.target" ];
+        Wants = [ "graphical-session-pre.target" ];
+      };
+    };
 
     services.upower.enable = true;
-    fonts.fontconfig.defaultFonts.sansSerif = ["Inter"];
+    fonts.fontconfig.defaultFonts.sansSerif = [ "Inter" ];
 
     ghaf.graphics.launchers = lib.mkIf config.ghaf.profiles.debug.enable [
       {
@@ -112,51 +129,5 @@ in {
         icon = "${pkgs.icon-pack}/utilities-terminal.svg";
       }
     ];
-
-    # Next 2 services/targets are taken from official weston documentation
-    # and adjusted for labwc
-    # https://wayland.pages.freedesktop.org/weston/toc/running-weston.html
-    systemd.user.services."labwc" = {
-      enable = true;
-      description = "labwc, a Wayland compositor, as a user service TEST";
-      documentation = ["man:labwc(1)"];
-      after = ["ghaf-session.service"];
-      serviceConfig = {
-        # Previously there was "notify" type, but for some reason
-        # systemd kills labwc.service because of timeout (even if it is disabled).
-        # "simple" works pretty well, so let's leave it.
-        Type = "simple";
-        #TimeoutStartSec = "60";
-        #WatchdogSec = "20";
-        # Defaults to journal
-        StandardOutput = "journal";
-        StandardError = "journal";
-        # ExecStart defined in labwc.config.nix
-        #GPU pt needs some time to start - labwc fails to restart 3 times in avg.
-        # ExecStartPre = "${pkgs.coreutils}/bin/sleep 3";
-        Restart = "on-failure";
-        RestartSec = "1";
-
-        # Ivan N: adding openssh into the PATH since it is needed for waypipe to work
-        Environment = "PATH=${pkgs.openssh}/bin:$PATH";
-      };
-      environment = {
-        WLR_RENDERER = cfg.renderer;
-        # See: https://github.com/labwc/labwc/blob/0.6.5/docs/environment
-        XKB_DEFAULT_LAYOUT = "us,fi";
-        XKB_DEFAULT_OPTIONS = "XKB_DEFAULT_OPTIONS=grp:alt_shift_toggle";
-        XDG_CURRENT_DESKTOP = "wlroots";
-        MOZ_ENABLE_WAYLAND = "1";
-        XCURSOR_THEME = "breeze_cursors";
-        WLR_NO_HARDWARE_CURSORS = "1";
-        _JAVA_AWT_WM_NONREPARENTING = "1";
-      };
-      wantedBy = ["default.target"];
-    };
-
-    #Allow video group to change brightness
-    services.udev.extraRules = ''
-      ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video $sys$devpath/brightness", RUN+="${pkgs.coreutils}/bin/chmod a+w $sys$devpath/brightness"
-    '';
   };
 }

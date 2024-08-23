@@ -1,6 +1,15 @@
 # Copyright 2022-2024 TII (SSRC) and the Ghaf contributors
 # SPDX-License-Identifier: Apache-2.0
-{
+{ config, lib, ... }:
+let
+  cfg = config.ghaf.reference.personalize.keys;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    concatStrings
+    mkForce
+    ;
+
   authorizedYubikeys = [
     # Yubikey public keys for testing team, enabled only in debug mode
     #1
@@ -12,4 +21,17 @@
     #4
     "ghaf:QaA1B4u1GzLt+HSwXpMxmdCOKiBN4WZSUAuEXZahNSpcv8xiYagp0ntVsl8TOx4K+sKls3gTn37Uso/dmncwdA==,mr0Nhwkok7VLUtkBMryOA0lZghU23SCYtU3CZeW5P4WVtnPax3N/6GkfuAv6Zw5ejC4BDvov3oKHTQT/F8eYqA==,es256,+presence"
   ];
+
+  inherit ((import ./authorizedSshKeys.nix)) authorizedSshKeys;
+in
+{
+  options.ghaf.reference.personalize.keys = {
+    enable = mkEnableOption "Enable personalization of keys for dev team";
+  };
+
+  config = mkIf cfg.enable {
+    users.users.root.openssh.authorizedKeys.keys = authorizedSshKeys;
+    users.users.${config.ghaf.users.accounts.user}.openssh.authorizedKeys.keys = authorizedSshKeys;
+    ghaf.services.yubikey.u2fKeys = mkForce (concatStrings authorizedYubikeys);
+  };
 }

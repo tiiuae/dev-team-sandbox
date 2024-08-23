@@ -3,10 +3,13 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}: let
+}:
+let
   cfg = config.ghaf.graphics.boot;
-in {
+in
+{
   options.ghaf.graphics.boot = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -21,10 +24,13 @@ in {
     boot = {
       plymouth = {
         enable = true;
-        logo = ../../../assets/ghaf-logo.png;
+        logo = "${pkgs.ghaf-artwork}/ghaf-logo.png";
       };
       # Hide boot log from user completely
-      kernelParams = ["quiet" "udev.log_priority=3"];
+      kernelParams = [
+        "quiet"
+        "udev.log_priority=3"
+      ];
       consoleLogLevel = 0;
       initrd.verbose = false;
     };
