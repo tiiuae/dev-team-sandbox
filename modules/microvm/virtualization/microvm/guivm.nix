@@ -59,7 +59,7 @@ let
               securityContext = map (vm: {
                 identifier = vm.name;
                 color = vm.borderColor;
-              }) config.ghaf.virtualization.microvm.appvm.vms;
+              }) (builtins.attrValues config.ghaf.virtualization.microvm.appvm.vms);
             };
 
             development = {

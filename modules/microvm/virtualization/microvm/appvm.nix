@@ -218,7 +218,7 @@ in
       description = ''
         List of AppVMs to be created
       '';
-      type = lib.types.listOf (
+      type = lib.types.attrsOf (
         types.submodule {
           options = {
             name = mkOption {
@@ -353,12 +353,12 @@ in
         };
       vmsWithWaypipe = lib.filter (
         vm: config.microvm.vms."${vm.name}-vm".config.config.ghaf.waypipe.enable
-      ) cfg.vms;
+      ) (builtins.attrValues cfg.vms);
     in
     lib.mkIf cfg.enable {
       microvm.vms =
         let
-          vms = lib.imap0 (vmIndex: vm: { "${vm.name}-vm" = makeVm { inherit vmIndex vm; }; }) cfg.vms;
+          vms = lib.imap0 (vmIndex: vm: { "${vm.name}-vm" = makeVm { inherit vmIndex vm; }; }) (builtins.attrValues cfg.vms);
         in
         lib.foldr lib.recursiveUpdate { } vms;
 
@@ -370,7 +370,7 @@ in
               inherit after requires serviceConfig;
             };
             "${vm.name}-swtpm" = makeSwtpmService { inherit vm; };
-          }) cfg.vms;
+          }) (builtins.attrValues cfg.vms);
           # Each AppVM with waypipe needs its own instance of vsockproxy on the host
           proxyServices = map (vm: {
             "vsockproxy-${vm.name}" =
