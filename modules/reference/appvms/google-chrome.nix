@@ -44,18 +44,10 @@ in
               "flag"
             ];
           }
-          {
-            name = "wireguard-gui-launcher";
-            command = "${config.ghaf.givc.appPrefix}/run-waypipe ${config.ghaf.givc.appPrefix}/wireguard-gui-launcher";
-          }
         ];
       };
       ghaf.reference.programs.google-chrome.enable = true;
       ghaf.services.xdghandlers.enable = true;
-      ghaf.services.wireguard-gui = {
-        enable = true;
-        name = "${name}";
-      };
     }
   ];
   borderColor = "#630505";

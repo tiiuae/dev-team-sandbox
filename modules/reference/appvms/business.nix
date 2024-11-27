@@ -173,10 +173,6 @@ in
                 name = "xarchiver";
                 command = "${config.ghaf.givc.appPrefix}/run-waypipe ${config.ghaf.givc.appPrefix}/xarchiver";
               }
-              {
-                name = "wireguard-gui-launcher";
-                command = "${config.ghaf.givc.appPrefix}/run-waypipe ${config.ghaf.givc.appPrefix}/wireguard-gui-launcher";
-              }
             ];
           };
 
@@ -189,11 +185,6 @@ in
           };
 
           services.xdghandlers.enable = true;
-          services.wireguard-gui = {
-            enable = true;
-            name = "${name}";
-          };
-
         };
         environment.etc."opt/chrome/native-messaging-hosts/fi.ssrc.open_normal.json" =
           mkIf config.ghaf.givc.enable

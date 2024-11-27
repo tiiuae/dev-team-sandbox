@@ -358,7 +358,9 @@ in
     lib.mkIf cfg.enable {
       microvm.vms =
         let
-          vms = lib.imap0 (vmIndex: vm: { "${vm.name}-vm" = makeVm { inherit vmIndex vm; }; }) (builtins.attrValues cfg.vms);
+          vms = lib.imap0 (vmIndex: vm: { "${vm.name}-vm" = makeVm { inherit vmIndex vm; }; }) (
+            builtins.attrValues cfg.vms
+          );
         in
         lib.foldr lib.recursiveUpdate { } vms;
 
