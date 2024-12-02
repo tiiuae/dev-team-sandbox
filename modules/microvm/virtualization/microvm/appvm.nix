@@ -279,6 +279,11 @@ in
               useTunneling = lib.mkEnableOption "Use Pulseaudio tunneling";
             };
             vtpm.enable = lib.mkEnableOption "vTPM support in the virtual machine";
+            # FIXME: Temporary solution to keep order of virtual machines, otherwise hosts file points to wrong vms.
+            vmIndex = mkOption {
+              type = types.int;
+              internal = true;
+            };
           };
         }
       );
@@ -358,9 +363,7 @@ in
     lib.mkIf cfg.enable {
       microvm.vms =
         let
-          vms = lib.imap0 (vmIndex: vm: { "${vm.name}-vm" = makeVm { inherit vmIndex vm; }; }) (
-            builtins.attrValues cfg.vms
-          );
+          vms = builtins.map (vm: { "${vm.name}-vm" = makeVm { inherit (vm) vmIndex; inherit vm; }; }) (builtins.attrValues cfg.vms);
         in
         lib.foldr lib.recursiveUpdate { } vms;
 
