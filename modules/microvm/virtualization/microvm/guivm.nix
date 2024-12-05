@@ -106,6 +106,19 @@ let
             services.xdghandlers.enable = true;
           };
 
+          # boot = {
+          #   kernelPatches = [
+          #     {
+          #       name = "i915-gen12-fix";
+          #       patch = null;
+          #       extraConfig = ''
+          #           X86_X2APIC y
+          #           X86_INTEL_LPSS y
+          #           DRM_I915_DEBUG y
+          #       '';
+          #     } ];
+          # };
+
           services.acpid = lib.mkIf config.ghaf.givc.enable {
             enable = true;
             lidEventCommands = ''

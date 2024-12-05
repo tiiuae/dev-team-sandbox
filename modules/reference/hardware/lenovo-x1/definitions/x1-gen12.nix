@@ -3,12 +3,11 @@
 #
 {
   # System name
-  name = "Lenovo X1 Carbon Gen 11";
+  name = "Lenovo X1 Carbon Gen 12";
 
   # List of system SKUs covered by this configuration
   skus = [
-    "LENOVO_MT_21HM_BU_Think_FM_ThinkPad X1 Carbon Gen 11 21HM006EGR"
-    "LENOVO_MT_21HM_BU_Think_FM_ThinkPad X1 Carbon Gen 11 21HM0072MX"
+    "LENOVO_MT_21KC_BU_Think_FM_ThinkPad X1 Carbon Gen 12 21KC006CMX"
     # TODO Add more SKUs
   ];
 
@@ -31,10 +30,7 @@
     mouse = {
       name = [
         [
-          "ELAN067C:00 04F3:31F9 Mouse"
-          "SYNA8016:00 06CB:CEB3 Mouse"
-          "ELAN067B:00 04F3:31F8 Mouse"
-          "SYNA8017:00 06CB:CEB2 Mouse"
+          "ELAN06D5:00 04F3:32B7 Mouse"
         ]
         "TPPS/2 Elan TrackPoint"
       ];
@@ -47,11 +43,7 @@
     touchpad = {
       name = [
         [
-          "ELAN067C:00 04F3:31F9 Touchpad"
-          "SYNA8016:00 06CB:CEB3 Touchpad"
-          "ELAN067B:00 04F3:31F8 Touchpad"
-          "SYNA8017:00 06CB:CEB2 Touchpad"
-          "ELAN901C:00 04F3:2C4E Touchpad"
+          "ELAN06D5:00 04F3:32B7 Touchpad"
         ]
       ];
       evdev = [ "/dev/touchpad0" ];
@@ -69,10 +61,10 @@
 
   network.pciDevices = [
     {
-      # Passthrough Intel WiFi card
+      # Network controller: Intel Corporation Meteor Lake PCH CNVi WiFi (rev 20)
       path = "0000:00:14.3";
       vendorId = "8086";
-      productId = "51f1";
+      productId = "7e40";
       name = "wlp0s5f0";
     }
   ];
@@ -80,20 +72,17 @@
   gpu = {
     pciDevices = [
       {
-        # Passthrough Intel Iris GPU
+        # VGA compatible controller: Intel Corporation Meteor Lake-P [Intel Graphics] (rev 08) (prog-if 00 [VGA controller])
         path = "0000:00:02.0";
         vendorId = "8086";
-        productId = "a7a1";
+        productId = "7d45";
       }
     ];
     kernelConfig = {
       stage1.kernelModules = [ "i915" ];
       kernelParams = [
         "earlykms"
-        #i915.enable_dpcd_backlight=3"
-        "xe.force_probe='7d45'"
-        "i915.force_probe='!7d45'"
-        "drm.debug=0xe"
+        "i915.enable_dpcd_backlight=3"
       ];
     };
   };
@@ -104,28 +93,28 @@
   audio = {
     pciDevices = [
       {
-        # ISA bridge: Intel Corporation Raptor Lake LPC/eSPI Controller (rev 01)
+        # ISA bridge: Intel Corporation Device 7e03 (rev 20)
         path = "0000:00:1f.0";
         vendorId = "8086";
-        productId = "519d";
+        productId = "7e03";
       }
       {
-        # Audio device: Intel Corporation Raptor Lake-P/U/H cAVS (rev 01)
+        # Audio device: Intel Corporation Meteor Lake-P HD Audio Controller (rev 20) (prog-if 80)
         path = "0000:00:1f.3";
         vendorId = "8086";
-        productId = "51ca";
+        productId = "7e28";
       }
       {
-        # SMBus: Intel Corporation Alder Lake PCH-P SMBus Host Controller (rev 01)
+        # SMBus: Intel Corporation Meteor Lake-P SMBus Controller (rev 20)
         path = "0000:00:1f.4";
         vendorId = "8086";
-        productId = "51a3";
+        productId = "7e22";
       }
       {
-        # Serial bus controller: Intel Corporation Alder Lake-P PCH SPI Controller (rev 01)
+        # Serial bus controller: Intel Corporation Meteor Lake-P SPI Controller (rev 20)
         path = "0000:00:1f.5";
         vendorId = "8086";
-        productId = "51a4";
+        productId = "7e23";
       }
     ];
     kernelConfig.kernelParams = [ "snd_intel_dspcfg.dsp_driver=0" ];
@@ -136,17 +125,17 @@
       {
         name = "cam0";
         hostbus = "3";
-        hostport = "8";
+        hostport = "3";
       }
       {
         name = "fpr0";
         hostbus = "3";
-        hostport = "6";
+        hostport = "2";
       }
       {
         name = "bt0";
         hostbus = "3";
-        hostport = "10";
+        hostport = "4";
       }
     ];
     external = [
