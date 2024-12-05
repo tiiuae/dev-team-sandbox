@@ -7,11 +7,16 @@
   ...
 }:
 let
+  bridgeNetBase = "192.168.101";
   cfg = config.ghaf.host.networking;
   sshKeysHelper = pkgs.callPackage ../../packages/ssh-keys-helper {
     inherit pkgs;
     inherit config;
   };
+  updateSources = import ../host/updater.nix;
+  routes = lib.map (entry:
+    { Destination = "${entry.ip}/32"; Gateway = "${bridgeNetBase}.1"; }
+  ) updateSources.updateSourcesEntries;
 in
 {
   options.ghaf.host.networking = {
@@ -35,7 +40,8 @@ in
       networks."10-virbr0" = {
         matchConfig.Name = "virbr0";
         networkConfig.DHCPServer = false;
-        addresses = [ { Address = "192.168.101.2/24"; } ];
+        addresses = [ { Address = "${bridgeNetBase}.2/24"; } ];
+        routes = routes;
       };
       # Connect VM tun/tap device to the bridge
       # TODO configure this based on IF the netvm is enabled

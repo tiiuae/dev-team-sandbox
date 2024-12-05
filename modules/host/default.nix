@@ -4,8 +4,14 @@
 # Modules that should be only imported to host
 #
 { lib, ... }:
+let
+  updateSources = import ./updater.nix;
+in
 {
   networking.hostName = lib.mkDefault "ghaf-host";
+  networking.hosts = lib.foldl' (acc: entry:
+    acc // { "${entry.ip}" = entry.hostname; }
+  ) {} updateSources.updateSourcesEntries;
 
   # Overlays should be only defined for host, because microvm.nix uses the
   # pkgs that already has overlays in place. Otherwise the overlay will be
