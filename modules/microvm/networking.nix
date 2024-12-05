@@ -19,6 +19,11 @@ let
   };
   inherit (config.ghaf.networking) hosts;
   inherit (config.networking) hostName;
+  updateSources = import ../host/updater.nix;
+  routes = lib.map (entry:
+    { Destination = "${entry.ip}/32"; Gateway = "${hosts."net-vm".ipv4}"; }
+  ) updateSources.updateSourcesEntries;
+
 in
 {
   options.ghaf.host.networking = {
@@ -45,6 +50,7 @@ in
         networkConfig.DHCPServer = false;
         addresses = [ { Address = "${hosts.${hostName}.ipv4}/24"; } ];
         gateway = optionals (builtins.hasAttr "net-vm" config.microvm.vms) [ "${hosts."net-vm".ipv4}" ];
+	routes = routes;
       };
       # Connect VM tun/tap device to the bridge
       # TODO configure this based on IF the netvm is enabled
