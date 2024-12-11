@@ -137,7 +137,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    ghaf.graphics.login-manager.enable = true;
+    ghaf.graphics.login-manager.enable = false;
 
     environment = {
       systemPackages =

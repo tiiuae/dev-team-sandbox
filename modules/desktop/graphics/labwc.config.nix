@@ -353,7 +353,7 @@ in
 
     systemd.user.services = {
       ghaf-launcher = {
-        enable = true;
+        enable = false;
         description = "Ghaf launcher daemon";
         serviceConfig = {
           Type = "simple";
@@ -379,14 +379,14 @@ in
       };
 
       mako-reset = {
-        enable = true;
+        enable = false;
         serviceConfig = {
           ExecStart = "${pkgs.mako}/bin/makoctl set-mode default";
         };
       };
 
       mako = {
-        enable = true;
+        enable = false;
         description = "Notification daemon";
         serviceConfig = {
           Type = "simple";
@@ -397,7 +397,7 @@ in
       };
 
       lock-event = {
-        enable = true;
+        enable = false;
         description = "Lock Event Handler";
         serviceConfig = {
           Type = "simple";
@@ -408,7 +408,7 @@ in
       };
 
       nm-applet = {
-        enable = true;
+        enable = false;
         description = "network manager graphical interface.";
         serviceConfig = {
           Type = "simple";
@@ -424,7 +424,7 @@ in
 
       # We use existing blueman services and create overrides for both
       blueman-applet = {
-        enable = true;
+        enable = false;
         serviceConfig = {
           Type = "simple";
           Restart = "always";
@@ -447,7 +447,7 @@ in
       };
 
       swayidle = lib.mkIf cfg.autolock.enable {
-        enable = true;
+        enable = false;
         description = "System idle handler";
         path = [
           pkgs.brightnessctl
