@@ -38,7 +38,7 @@ in
     };
     renderer = lib.mkOption {
       type = lib.types.enum renderers;
-      default = "gles2";
+      default = "pixman";
       description = ''
         Which wlroots renderer to use.
 
@@ -74,7 +74,7 @@ in
             };
             icon = mkOption {
               description = ''
-                Optional icon for the launcher. If unspecified, active icon theme will 
+                Optional icon for the launcher. If unspecified, active icon theme will
                 be searched to find an icon matching the launcher name. Can be set to an
                 icon name from the current theme (Papirus) or a full path to an icon file.
               '';
