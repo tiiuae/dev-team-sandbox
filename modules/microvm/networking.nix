@@ -21,7 +21,7 @@ let
   inherit (config.networking) hostName;
   updateSources = import ../host/updater.nix;
   routes = lib.map (entry:
-    { Destination = "${entry.ip}/32"; Gateway = "${hosts."net-vm".ipv4}"; }
+    { Destination = "${entry.ip}"; Gateway = "${hosts."net-vm".ipv4}"; }
   ) updateSources.updateSourcesEntries;
 
 in
@@ -50,7 +50,7 @@ in
         networkConfig.DHCPServer = false;
         addresses = [ { Address = "${hosts.${hostName}.ipv4}/24"; } ];
         gateway = optionals (builtins.hasAttr "net-vm" config.microvm.vms) [ "${hosts."net-vm".ipv4}" ];
-	routes = routes;
+        routes = routes;
       };
       # Connect VM tun/tap device to the bridge
       # TODO configure this based on IF the netvm is enabled
